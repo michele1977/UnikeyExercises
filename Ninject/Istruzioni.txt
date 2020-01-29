@@ -1,0 +1,3 @@
+Modificare il progetto di modo da realizzare un ISOLAMENTO FORTE 
+mediante l'uso di PATTERN e Tool che ritenete più idonei IDONEI.
+Completare i Tests
