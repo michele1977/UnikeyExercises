@@ -25,5 +25,10 @@ namespace Exercise.Business
         {
             Repository.Delete(id);
         }
+
+        public List<Assesment> GetTestList(string text)
+        {
+            return Repository.GetTestList(text);
+        }
     }
 }
