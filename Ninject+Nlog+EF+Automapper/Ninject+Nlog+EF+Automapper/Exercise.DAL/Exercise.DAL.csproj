@@ -31,6 +31,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=9.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.9.0.0\lib\net461\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.2.0.30\lib\net461\Dapper.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -41,6 +47,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DAO\AnswerDao.cs" />
+    <Compile Include="DAO\AssesmentDao.cs" />
+    <Compile Include="DAO\QuestionDao.cs" />
+    <Compile Include="Enums\AnswerDaoType.cs" />
+    <Compile Include="IMyRepository.cs" />
+    <Compile Include="Mapper\AnswerMapper.cs" />
+    <Compile Include="Mapper\AssesmentMapper.cs" />
+    <Compile Include="Mapper\AssesmentMapperLight.cs" />
+    <Compile Include="Mapper\MapConfig.cs" />
+    <Compile Include="Mapper\QuestionMapper.cs" />
+    <Compile Include="Mapper\QuestionMapperLight.cs" />
     <Compile Include="MyRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -50,5 +67,9 @@
       <Name>Exercise.Domain</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

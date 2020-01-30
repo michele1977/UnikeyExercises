@@ -4,15 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Exercise.Domain
+namespace Exercise.DAL.DAO
 {
-    public class Assesment
+    public class AssesmentDao
     {
         public int Id { get; set; }
         public string Title { get; set; }
         public DateTime CreationDate { get; set; }
-
-        public List<Question> Questions;
-
+        public List<QuestionDao> Questions;
     }
 }
