@@ -1,5 +1,6 @@
 1 - Creare Service e Repository con ADO.NET utilizzando oggetti DAO da mappare
     utilizzando Automapper;
+    N.B. : Tutte le operazioni su DB devono essere fatte mediante l'utilizzo di Stored Procedures
 
 2 - Introdurre il logging mediante NLog
 
