@@ -1,0 +1,12 @@
+1 - Creare Service e Repository con ADO.NET utilizzando oggetti DAO da mappare
+    utilizzando Automapper;
+
+2 - Introdurre il logging mediante NLog
+
+3 - Ottimizzare il repository di modo che nel caso di GetTestList() applichi un mapping 
+    differenziato : nel caso di lista l'oggetto Assestment viene mappato 
+    parzialmente solo con le properties FLAT, negli altri casi deve essere mappato completamente)
+
+4 - Modificare la solution utilizzando IOC per separare Business e DAL (introduzione di Ninject),
+    Utilizzare Ninject per l'injection dei Mapping per Automapper
+    
