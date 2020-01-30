@@ -16,7 +16,7 @@ namespace Exercise.Test
         public IMapper Mapper { get; set; }
 
         [TestMethod]
-        public void Assesment_DomainToDao_OK()
+        public void MapperHeavy_DomainToDao_OK()
         {
             var Assesment = new Assesment
             {
@@ -50,7 +50,7 @@ namespace Exercise.Test
         }
         
         [TestMethod]
-        public void Assesment_DaoToDomain_OK()
+        public void MapperHeavy_DaoToDomain_OK()
         {
         }
     }

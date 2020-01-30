@@ -9,7 +9,7 @@ namespace Exercise.Test
     [TestClass]
     public class UnitTest1
     {
-        public MyRepository MyRepository { get; set; } = new MyRepository();
+        public IMyRepository MyRepository { get; set; } = new MyRepository();
 
         public Assesment Assesment { get; set; } = new Assesment
         {
