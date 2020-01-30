@@ -10,7 +10,5 @@ namespace Exercise.DAL
         void Update(Assesment assestment);
         void Delete(int id);
         List<Assesment> GetTestList(string text);
-
-
     }
 }

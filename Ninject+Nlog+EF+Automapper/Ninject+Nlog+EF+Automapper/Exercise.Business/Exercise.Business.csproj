@@ -44,5 +44,15 @@
     <Compile Include="MyService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Exercise.DAL\Exercise.DAL.csproj">
+      <Project>{BAD60FD8-E21E-4FB6-928F-B5E3592FCCF7}</Project>
+      <Name>Exercise.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Exercise.Domain\Exercise.Domain.csproj">
+      <Project>{EE6419FB-9CB3-45B5-901E-1E9D0637C555}</Project>
+      <Name>Exercise.Domain</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
