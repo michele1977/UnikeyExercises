@@ -18,7 +18,8 @@ namespace Exercise.DAL
     {
         public void Create(Assesment assesment)
         {
-            var assesmentDao = new MapConfig().Mapper.Map<AssesmentDao>(assesment);
+            var mapConfig = new MapConfig();
+            var assesmentDao = mapConfig.Mapper.Map<AssesmentDao>(assesment);
 
             using (var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ExerciseDB"].ConnectionString))
             {
@@ -110,10 +111,39 @@ namespace Exercise.DAL
                         assesmentDao.Id = (int)data["Id"];
                         assesmentDao.Title = (string) data["Title"];
                         assesmentDao.CreationDate = (DateTime) data["CreationDate"];
-                        
-                        //TODO: riempire question e answer
-
+                        assesmentDao.Questions = new List<QuestionDao>();
                     }
+
+                    command.CommandText = $"SELECT * FROM [dbo].[Question] WHERE AssesmentId = {assesmentDao.Id}";
+                    var questionData = command.ExecuteReader();
+                    while (questionData.Read())
+                    {
+                        assesmentDao.Questions.Add(
+                            new QuestionDao
+                            {
+                                Id = (int)questionData["Id"],
+                                QuestionText = (string)questionData["QuestionText"],
+                                Position = (int)questionData["Position"],
+                                Answers = new List<AnswerDao>()
+                            });
+                    }
+                    
+                    command.CommandText = $"SELECT * FROM [dbo].[Answer] WHERE QuestionId = {assesmentDao.Id}";
+                    var answerData = command.ExecuteReader();
+                    while (questionData.Read())
+                    {
+                        assesmentDao.Questions.Add(
+                            new QuestionDao
+                            {
+                                Id = (int)questionData["Id"],
+                                QuestionText = (string)questionData["QuestionText"],
+                                Position = (int)questionData["Position"],
+                                Answers = new List<AnswerDao>()
+                            }
+                        );
+                    }
+
+
                 }
 
                 connection.Close();

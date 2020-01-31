@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Exercise.Business;
 using Exercise.DAL;
-using Exercise.DAL.DAO;
-using Exercise.DAL.Enums;
 using Exercise.Domain;
 using Exercise.Domain.Enums;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -10,10 +9,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Exercise.Test
 {
     [TestClass]
-    public class UnitTest1
+    public class UnitTestService
     {
-        public IMyRepository MyRepository { get; set; } = new MyRepository();
-
         public Assesment Assesment { get; set; } = new Assesment
         {
             Title = "Prova",
@@ -37,38 +34,38 @@ namespace Exercise.Test
             }
         };
 
+        public static IMyRepository Repo { get; set; } = new MyRepository();
+
+        public static IMyService Service { get; set; } = new MyService(Repo);
+
         [TestMethod]
         public void Exercise_Create_OK()
         {
-            MyRepository.Create(Assesment);
-            var assesmentDao = MyRepository.Read(5);
-            Assert.AreEqual(1, 1);
+            Service.Create(Assesment);
         }
-
+        
         [TestMethod]
         public void Exercise_Read_OK()
         {
-            var assesment = MyRepository.Read(2);
-            const string test = "Prova";
-            Assert.AreEqual(test,assesment.Title);
+            Assert.ThrowsException<NotImplementedException>(() => Service.Read(1));
         }
-
-        [TestMethod]
-        public void Exercise_ReadList_OK()
-        {
-            Assert.ThrowsException<NotImplementedException>(() => MyRepository.GetTestList(""));
-        }
-
-        [TestMethod]
-        public void Exercise_Update_OK()
-        {            
-            Assert.ThrowsException<NotImplementedException>(() => MyRepository.Update(new Assesment()));
-        }
-
+        
         [TestMethod]
         public void Exercise_Delete_OK()
         {
-            Assert.ThrowsException<NotImplementedException>(() => MyRepository.Delete(0));
+            Assert.ThrowsException<NotImplementedException>(() => Service.Delete(1));
+        }
+        
+        [TestMethod]
+        public void Exercise_GetList_OK()
+        {
+            Assert.ThrowsException<NotImplementedException>(() => Service.GetTestList(""));
+        }
+        
+        [TestMethod]
+        public void Exercise_Update_OK()
+        {
+            Assert.ThrowsException<NotImplementedException>(() => Service.Update(new Assesment()));
         }
     }
 }

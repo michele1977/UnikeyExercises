@@ -10,7 +10,7 @@ using Exercise.DAL.Mapper;
 
 namespace Exercise.Business
 {
-    public class MyService
+    public class MyService : IMyService
     {
         public IMyRepository Repo { get; set; }
 
@@ -24,6 +24,26 @@ namespace Exercise.Business
         public void Create(Assesment assesment)
         {
             Repo.Create(assesment);
+        }
+
+        public Assesment Read(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update(Assesment assesment)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Delete(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Assesment> GetTestList(string text)
+        {
+            throw new NotImplementedException();
         }
     }
 }
