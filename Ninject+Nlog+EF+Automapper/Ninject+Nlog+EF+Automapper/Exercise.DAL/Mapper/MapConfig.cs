@@ -13,7 +13,7 @@ namespace Exercise.DAL.Mapper
 
         public MapConfig()
         {
-            Mapper = new AutoMapper.Mapper(ConfigureLight());
+            Mapper = new AutoMapper.Mapper(Configure());
         }
 
         public MapConfig(IMapper mapper)

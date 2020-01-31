@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=9.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.9.0.0\lib\net461\AutoMapper.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -43,6 +46,19 @@
   <ItemGroup>
     <Compile Include="MyService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Exercise.DAL\Exercise.DAL.csproj">
+      <Project>{BAD60FD8-E21E-4FB6-928F-B5E3592FCCF7}</Project>
+      <Name>Exercise.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Exercise.Domain\Exercise.Domain.csproj">
+      <Project>{EE6419FB-9CB3-45B5-901E-1E9D0637C555}</Project>
+      <Name>Exercise.Domain</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

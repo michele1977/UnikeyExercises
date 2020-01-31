@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Exercise.DAL;
+using Exercise.DAL.DAO;
+using Exercise.DAL.Enums;
 using Exercise.Domain;
+using Exercise.Domain.Enums;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Exercise.Test
@@ -14,15 +17,31 @@ namespace Exercise.Test
         public Assesment Assesment { get; set; } = new Assesment
         {
             Title = "Prova",
-            CreationDate = DateTime.Now
+            CreationDate = DateTime.Now,
+            Questions = new List<Question>
+            {
+                new Question
+                {
+                    Position = 1,
+                    QuestionText = "",
+                    Answers = new List<Answer>
+                    {
+                        new Answer
+                        {
+                            AnswerText = "",
+                            IsCorrect = AnswerType.Correct,
+                            Position = 1
+                        }
+                    }
+                }
+            }
         };
 
         [TestMethod]
         public void Exercise_Create_OK()
         {
             MyRepository.Create(Assesment);
-
-            //var assesment = MyRepository.Read(Assesment.Id);
+            var assesmentDao = MyRepository.Read(5);
             Assert.AreEqual(1, 1);
         }
 

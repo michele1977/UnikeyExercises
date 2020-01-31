@@ -42,7 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Answer.cs" />
-    <Compile Include="Assestment.cs" />
+    <Compile Include="Assesment.cs" />
     <Compile Include="Enums\AnswerType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Question.cs" />

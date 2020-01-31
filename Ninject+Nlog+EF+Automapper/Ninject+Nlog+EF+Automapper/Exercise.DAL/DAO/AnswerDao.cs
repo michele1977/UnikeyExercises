@@ -9,6 +9,7 @@ namespace Exercise.DAL.DAO
 {
     public class AnswerDao
     {
+        public int Id { get; set; }
         public string AnswerText { get; set; }
         public int Position { get; set; }
         public AnswerDaoType IsCorrect { get; set; }

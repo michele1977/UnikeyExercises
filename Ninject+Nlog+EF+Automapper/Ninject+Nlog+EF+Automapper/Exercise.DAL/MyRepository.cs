@@ -5,35 +5,99 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
+using Exercise.DAL.DAO;
 using Exercise.Domain;
+using Dapper;
+using Exercise.DAL.Mapper;
+using System.Configuration;
 
 namespace Exercise.DAL
 {
     public class MyRepository : IMyRepository
     {
-        private const string connectionString = @"Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=ExerciseDB;Data Source=DESKTOP-UBDU9NK\SQLEXPRESS";
-
-        public void Create(Assesment assestment)
+        public void Create(Assesment assesment)
         {
-            using (var connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
+            var assesmentDao = new MapConfig().Mapper.Map<AssesmentDao>(assesment);
 
+            using (var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ExerciseDB"].ConnectionString))
+            {
                 using (var command = connection.CreateCommand())
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.CommandText = "sp_InsertAssesment";
-                    command.BeginExecuteNonQuery();
-                };
 
-                connection.Close();
+                    AddAssesmentParameters(command, assesmentDao);
+                    var id = command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Output
+                    });
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+
+                    var assesmentId = Convert.ToInt32(id.Value);
+
+                    foreach (var q in assesmentDao.Questions)
+                    {
+                        command.CommandText = "sp_InsertQuestion";
+
+                        AddQuestionParameters(command, q, assesmentId);
+
+                        var qId = command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int)
+                        {
+                            Direction = ParameterDirection.Output
+                        });
+
+                        connection.Open();
+                        command.ExecuteNonQuery();
+                        connection.Close();
+
+                        command.CommandText = "sp_InsertAnswer";
+                        var questionId = Convert.ToInt32(qId.Value);
+
+                        foreach (var a in q.Answers)
+                        {
+                            AddAnswerParameters(command, a, questionId);
+                            connection.Open();
+                            command.ExecuteNonQuery();
+                            connection.Close();
+                        }
+                    }
+                }
             }
         }
 
-        public Assesment Read(int id)
+        #region AddParameters
+        private static void AddAnswerParameters(SqlCommand command, AnswerDao answerDao, int questionId)
         {
-            var assesment = new Assesment();
-            using (var connection = new SqlConnection(connectionString))
+            command.Parameters.Clear();
+            command.Parameters.Add(new SqlParameter("@APosition", answerDao.Position));
+            command.Parameters.Add(new SqlParameter("@IsCorrect", answerDao.IsCorrect));
+            command.Parameters.Add(new SqlParameter("@QuestionId", questionId));
+            command.Parameters.Add(new SqlParameter("@AText", answerDao.AnswerText));
+        }
+
+        private static void AddQuestionParameters(SqlCommand command, QuestionDao questionDao, int assesmentId)
+        {
+            command.Parameters.Clear();
+            command.Parameters.Add(new SqlParameter(("@QuestionText"), questionDao.QuestionText));
+            command.Parameters.Add(new SqlParameter("@Position", questionDao.Position));
+            command.Parameters.Add(new SqlParameter("@AssesmentId", assesmentId));
+        }
+
+        private static void AddAssesmentParameters(SqlCommand command, AssesmentDao assesmentDao)
+        {
+            command.Parameters.Add(new SqlParameter("@Title", assesmentDao.Title));
+            command.Parameters.Add(new SqlParameter("@CreationDate", assesmentDao.CreationDate));
+        }
+        #endregion
+
+        public AssesmentDao Read(int id)
+        {
+            var assesmentDao = new AssesmentDao();
+            using (var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ExerciseDB"].ConnectionString))
             {
                 connection.Open();
 
@@ -43,19 +107,22 @@ namespace Exercise.DAL
                     var data = command.ExecuteReader();
                     while (data.Read())
                     {
-                        assesment.Id = (int)data["Id"];
-                        assesment.Title = (string) data["Title"];
-                        assesment.CreationDate = (DateTime) data["CreationDate"];
+                        assesmentDao.Id = (int)data["Id"];
+                        assesmentDao.Title = (string) data["Title"];
+                        assesmentDao.CreationDate = (DateTime) data["CreationDate"];
+                        
+                        //TODO: riempire question e answer
+
                     }
                 }
 
                 connection.Close();
             }
             
-            return assesment;
+            return assesmentDao;
         }
 
-        public void Update(Assesment assestment)
+        public void Update(Assesment assesment)
         {
             throw new NotImplementedException();
         }
@@ -65,7 +132,7 @@ namespace Exercise.DAL
             throw new NotImplementedException();
         }
 
-        public List<Assesment> GetTestList(string text)
+        public List<AssesmentDao> GetTestList(string text)
         {
             throw new NotImplementedException();
         }
