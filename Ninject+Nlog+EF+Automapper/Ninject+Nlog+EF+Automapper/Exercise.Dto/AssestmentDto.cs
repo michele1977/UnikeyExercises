@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Exercise.Dto
 {
-    class AssestmentDto
+    public class AssestmentDto
     {
         public AssestmentDto(Assestment assestment)
         {

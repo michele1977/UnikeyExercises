@@ -1,5 +1,6 @@
 ﻿using Exercise.DAL;
 using Exercise.Domain;
+using Exercise.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,13 +17,13 @@ namespace Exercise.Business
         {
         }
 
-        public List<Assestment> GetAssestment()
-        {
-            MyRepository assestments = new MyRepository();
-            List<Assestment> assest = assestments.ReadAll();
-
-            return assest;
-        }
+        //public List<AssestmentDto> GetAssestment()
+        //{
+        //    MyRepository assestments = new MyRepository();
+        //    //List<AssestmentDto> assest = assestments.ReadAll();
+            
+        //    //return assest;
+        //}
 
         public void CreateAssestement(Assestment assestment)
         {

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Exercise.Domain;
+using Exercise.Dto;
 
 namespace Exercise.DAL
 {
@@ -101,31 +102,34 @@ namespace Exercise.DAL
                 }
             }
 
-        public List<Assestment> ReadAll()
-        {
-            List<Assestment> assestments = new List<Assestment>();
-            using (SqlConnection connection = new SqlConnection(Esercizio))
-            {
-                SqlCommand sqlcommand = new SqlCommand("SELECT * FROM Assestment", connection);
-                try
-                {
-                    connection.Open();
-                    SqlDataReader reader = sqlcommand.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        assestments.Add(new Assestment((int) reader["Id"],
-                            reader["Title"].ToString(),
-                            (DateTime) reader["CreationDate"]));
-                    }
-                    reader.Close();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
-            return assestments;
-        }
+        //public List<AssestmentDto> ReadAll()
+        //{
+        //    List<AssestmentDto> assestments = new List<AssestmentDto>();
+        //    using (SqlConnection connection = new SqlConnection(Esercizio))
+        //    {
+        //        SqlCommand sqlcommand = new SqlCommand("SELECT * FROM Assestment", connection);
+        //        try
+        //        {
+        //            connection.Open();
+        //            SqlDataReader reader = sqlcommand.ExecuteReader();
+        //            while (reader.Read())
+        //            {
+        //                assestments.Add(new AssestmentDto((reader["Title"].ToString(),
+        //                    (DateTime) reader["CreationDate"],
+        //                    reader["Answers"]new quest
+        //                    {
+
+        //                    })));
+        //            }
+        //            reader.Close();
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Console.WriteLine(ex.Message);
+        //        }
+        //    }
+        //    return assestments;
+        //}
 
         //public Assestment Read(int id)
         //{

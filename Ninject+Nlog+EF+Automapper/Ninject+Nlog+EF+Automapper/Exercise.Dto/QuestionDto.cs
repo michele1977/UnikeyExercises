@@ -7,7 +7,7 @@ using Exercise.Domain;
 
 namespace Exercise.Dto
 {
-    class QuestionDto
+    public class QuestionDto
     {
         public QuestionDto(Question question)
         {
