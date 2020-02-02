@@ -47,7 +47,7 @@ namespace Exercise.Test
         [TestMethod]
         public void Exercise_Read_OK()
         {
-            Assert.ThrowsException<NotImplementedException>(() => Service.Read(1));
+            var assesment = Service.Read(13);
         }
         
         [TestMethod]

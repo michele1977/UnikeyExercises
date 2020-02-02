@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Exercise.DAL.Enums;
 
 namespace Exercise.DAL.Mapper
 {
@@ -11,9 +12,21 @@ namespace Exercise.DAL.Mapper
     {
         public IMapper Mapper { get; set; }
 
-        public MapConfig()
+        public MapConfig(ConfigTypeEnum configType)
         {
-            Mapper = new AutoMapper.Mapper(Configure());
+            switch (configType)
+            {
+                case ConfigTypeEnum.Heavy: 
+                    Mapper = new AutoMapper.Mapper(Configure());
+                    break;
+                case ConfigTypeEnum.Light: 
+                    Mapper = new AutoMapper.Mapper(ConfigureLight());
+                    break;
+                default:
+                    Mapper = new AutoMapper.Mapper(ConfigureLight());
+                    break;
+            }
+            
         }
 
         public MapConfig(IMapper mapper)
@@ -21,6 +34,7 @@ namespace Exercise.DAL.Mapper
             Mapper = mapper;
         }
 
+        #region Configurations
         private static MapperConfiguration Configure()
         {
             var mapperConfig = new MapperConfiguration(cfg => 
@@ -45,5 +59,6 @@ namespace Exercise.DAL.Mapper
 
             return mapperConfig;
         }
+        #endregion
     }
 }

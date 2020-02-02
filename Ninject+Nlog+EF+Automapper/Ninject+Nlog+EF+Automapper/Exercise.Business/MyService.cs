@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Exercise.DAL;
 using Exercise.DAL.DAO;
+using Exercise.DAL.Enums;
 using Exercise.DAL.Mapper;
 
 namespace Exercise.Business
@@ -13,8 +14,6 @@ namespace Exercise.Business
     public class MyService : IMyService
     {
         public IMyRepository Repo { get; set; }
-
-        public MyService(){}
 
         public MyService(IMyRepository repo)
         {
@@ -28,17 +27,20 @@ namespace Exercise.Business
 
         public Assesment Read(int id)
         {
-            throw new NotImplementedException();
+            var assesmentDao = Repo.Read(id);
+            var mapConfig = new MapConfig(ConfigTypeEnum.Heavy);
+            var assesment = mapConfig.Mapper.Map<Assesment>(assesmentDao);
+            return assesment;
         }
 
         public void Update(Assesment assesment)
         {
-            throw new NotImplementedException();
+            Repo.Update(assesment);
         }
 
         public void Delete(int id)
         {
-            throw new NotImplementedException();
+            Repo.Delete(id);
         }
 
         public List<Assesment> GetTestList(string text)

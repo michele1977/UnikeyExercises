@@ -16,21 +16,24 @@ namespace Exercise.Test
 
         public Assesment Assesment { get; set; } = new Assesment
         {
-            Title = "Prova",
+            Id = 9,
+            Title = "BohTest",
             CreationDate = DateTime.Now,
             Questions = new List<Question>
             {
                 new Question
                 {
-                    Position = 1,
-                    QuestionText = "",
+                    Id = 3,
+                    Position = 2,
+                    QuestionText = "Is Boh?",
                     Answers = new List<Answer>
                     {
                         new Answer
                         {
-                            AnswerText = "",
+                            Id = 2,
+                            AnswerText = "Boh",
                             IsCorrect = AnswerType.Correct,
-                            Position = 1
+                            Position = 4
                         }
                     }
                 }
@@ -40,17 +43,16 @@ namespace Exercise.Test
         [TestMethod]
         public void Exercise_Create_OK()
         {
-            //MyRepository.Create(Assesment);
-            //var assesmentDao = MyRepository.Read(5);
-
-            // TODO: Assert
+            MyRepository.Create(Assesment);
+            var assesmentDao = MyRepository.Read(5);
+            //TODO: assert
         }
 
         [TestMethod]
         public void Exercise_Read_OK()
         {
-            //var assesment = MyRepository.Read(2);
-            //const string test = "Prova";
+            var assesment = MyRepository.Read(11);
+            Assert.AreEqual(4, assesment.Questions[0].Id);
         }
 
         [TestMethod]
@@ -62,13 +64,13 @@ namespace Exercise.Test
         [TestMethod]
         public void Exercise_Update_OK()
         {            
-            Assert.ThrowsException<NotImplementedException>(() => MyRepository.Update(new Assesment()));
+            MyRepository.Update(Assesment);
         }
 
         [TestMethod]
         public void Exercise_Delete_OK()
         {
-            Assert.ThrowsException<NotImplementedException>(() => MyRepository.Delete(0));
+            MyRepository.Delete(10);
         }
     }
 }

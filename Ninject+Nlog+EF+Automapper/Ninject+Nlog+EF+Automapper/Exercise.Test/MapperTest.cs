@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
 using AutoMapper;
 using Exercise.DAL.DAO;
+using Exercise.DAL.Enums;
 using Exercise.DAL.Mapper;
 using Exercise.Domain;
 using Exercise.Domain.Enums;
@@ -42,7 +43,7 @@ namespace Exercise.Test
                 }
             };
 
-            var mapConfig = new MapConfig();
+            var mapConfig = new MapConfig(ConfigTypeEnum.Light);
             Mapper = mapConfig.Mapper;
 
             var asdao = Mapper.Map<AssesmentDao>(Assesment);

@@ -52,6 +52,8 @@
     <Compile Include="DAO\AssesmentDao.cs" />
     <Compile Include="DAO\QuestionDao.cs" />
     <Compile Include="Enums\AnswerDaoType.cs" />
+    <Compile Include="Enums\ConfigTypeEnum.cs" />
+    <Compile Include="Helpers\AssesmentHelper.cs" />
     <Compile Include="IMyRepository.cs" />
     <Compile Include="Mapper\AnswerMapper.cs" />
     <Compile Include="Mapper\AssesmentMapper.cs" />
