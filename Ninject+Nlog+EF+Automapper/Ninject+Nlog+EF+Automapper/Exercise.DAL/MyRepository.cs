@@ -40,20 +40,7 @@ namespace Exercise.DAL
 
         public void Delete(int id)
         {
-            using (var connection =
-                new SqlConnection(ConfigurationManager.ConnectionStrings["ExerciseDB"].ConnectionString))
-            {
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandType = CommandType.StoredProcedure;
-                    command.CommandText = "sp_DeleteAssesment";
-                    command.Parameters.Add(new SqlParameter("@Id", id));
-
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                    connection.Close();
-                }
-            }
+            AssesmentHelper.Delete(id);
         }
 
         // TODO non ho capito a cosa serve il metodo GetTestList
