@@ -4,34 +4,37 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Exercise.DAL.DAO;
 using Exercise.DAL.Enums;
+using Exercise.Domain;
 
 namespace Exercise.DAL.Mapper
 {
     public class MapConfig
     {
         public IMapper Mapper { get; set; }
-
-        public MapConfig(ConfigTypeEnum configType)
-        {
-            switch (configType)
-            {
-                case ConfigTypeEnum.Heavy: 
-                    Mapper = new AutoMapper.Mapper(Configure());
-                    break;
-                case ConfigTypeEnum.Light: 
-                    Mapper = new AutoMapper.Mapper(ConfigureLight());
-                    break;
-                default:
-                    Mapper = new AutoMapper.Mapper(ConfigureLight());
-                    break;
-            }
-            
-        }
+        
 
         public MapConfig(IMapper mapper)
         {
             Mapper = mapper;
+        }
+
+        public MapConfig()
+        {
+        }
+
+        public static MapperConfiguration GetConfiguration(ConfigTypeEnum configType)
+        {
+            switch (configType)
+            {
+                case ConfigTypeEnum.Heavy:
+                    return Configure();
+                case ConfigTypeEnum.Light:
+                    return ConfigureLight();
+                default:
+                    return ConfigureLight();
+            }
         }
 
         #region Configurations

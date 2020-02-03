@@ -2,18 +2,22 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
 using AutoMapper;
+using Exercise.Business;
 using Exercise.DAL.DAO;
 using Exercise.DAL.Enums;
 using Exercise.DAL.Mapper;
 using Exercise.Domain;
 using Exercise.Domain.Enums;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Ninject;
+using Ninject.Modules;
 
 namespace Exercise.Test
 {
     [TestClass]
     public class MapperTest
     {
+        public IKernel Kernel { get; set; } = new StandardKernel();
         public IMapper Mapper { get; set; }
 
         [TestMethod]
@@ -43,8 +47,12 @@ namespace Exercise.Test
                 }
             };
 
-            var mapConfig = new MapConfig(ConfigTypeEnum.Light);
-            Mapper = mapConfig.Mapper;
+            Kernel.Load(new List<INinjectModule>
+            {
+                new Bindings()
+            });
+
+            Mapper = Kernel.Get<IMapper>();
 
             var asdao = Mapper.Map<AssesmentDao>(Assesment);
             Assert.AreEqual(1, asdao.Id);

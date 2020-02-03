@@ -13,15 +13,17 @@ using Exercise.DAL.Mapper;
 using System.Configuration;
 using Exercise.DAL.Enums;
 using Exercise.DAL.Helpers;
+using Ninject;
 
 namespace Exercise.DAL
 {
     public class MyRepository : IMyRepository
     {
+        public IKernel Kernel => new StandardKernel();
+        public IMapper Mapper => Kernel.Get<IMapper>();
         public void Create(Assesment assesment)
         {
-            var mapConfig = new MapConfig(ConfigTypeEnum.Heavy);
-            var assesmentDao = mapConfig.Mapper.Map<AssesmentDao>(assesment);
+            var assesmentDao = Mapper.Map<AssesmentDao>(assesment);
             AssesmentHelper.Create(assesmentDao);
         }
 
@@ -33,8 +35,7 @@ namespace Exercise.DAL
 
         public void Update(Assesment assesment)
         {
-            var mapConfig = new MapConfig(ConfigTypeEnum.Heavy);
-            var assesmentDaoUpdated = mapConfig.Mapper.Map<AssesmentDao>(assesment);
+            var assesmentDaoUpdated = Mapper.Map<AssesmentDao>(assesment);
             AssesmentHelper.Update(assesmentDaoUpdated);
         }
 

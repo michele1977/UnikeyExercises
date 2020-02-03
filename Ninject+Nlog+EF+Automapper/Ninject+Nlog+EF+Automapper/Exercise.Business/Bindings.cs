@@ -17,7 +17,8 @@ namespace Exercise.Business
         {
             Kernel.Bind<IMyService>().To<MyService>();
             Kernel.Bind<IMyRepository>().To<MyRepository>();
-            //Kernel.Bind<IMapper>().ToMethod(ctx => new Mapper());
+            Kernel.Bind<MapperConfiguration>().ToConstant(MapConfig.GetConfiguration(ConfigTypeEnum.Heavy)).InSingletonScope();
+            Kernel.Bind<IMapper>().ToMethod(ctx => new Mapper(MapConfig.GetConfiguration(ConfigTypeEnum.Heavy), type => Kernel.GetType()));
         }
     }
 }

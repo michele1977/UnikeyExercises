@@ -115,7 +115,6 @@ namespace Exercise.DAL.Helpers
 
             return assesmentDao;
         }
-
         #region Read
         private static AssesmentDao ReadAssesment(SqlCommand command, AssesmentDao assesmentDao, SqlConnection connection)
         {

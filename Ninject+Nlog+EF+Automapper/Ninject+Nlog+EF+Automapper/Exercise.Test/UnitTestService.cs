@@ -5,6 +5,8 @@ using Exercise.DAL;
 using Exercise.Domain;
 using Exercise.Domain.Enums;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Ninject;
+using Ninject.Modules;
 
 namespace Exercise.Test
 {
@@ -34,9 +36,9 @@ namespace Exercise.Test
             }
         };
 
-        public static IMyRepository Repo { get; set; } = new MyRepository();
+        public static IKernel Kernel { get; set; } = new StandardKernel();
 
-        public static IMyService Service { get; set; } = new MyService(Repo);
+        public static IMyService Service { get; set; } 
 
         [TestMethod]
         public void Exercise_Create_OK()
@@ -47,6 +49,11 @@ namespace Exercise.Test
         [TestMethod]
         public void Exercise_Read_OK()
         {
+            Kernel.Load(new List<INinjectModule>
+            {
+                new Bindings()
+            });
+            Service = Kernel.Get<IMyService>();
             var assesment = Service.Read(13);
         }
         
