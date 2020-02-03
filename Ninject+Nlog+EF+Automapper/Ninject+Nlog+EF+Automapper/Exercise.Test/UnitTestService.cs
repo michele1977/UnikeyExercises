@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using AutoMapper;
 using Exercise.Business;
+using Exercise.Business.Injection;
 using Exercise.DAL;
+using Exercise.DAL.Mapper;
 using Exercise.Domain;
 using Exercise.Domain.Enums;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -36,23 +39,22 @@ namespace Exercise.Test
             }
         };
 
-        public static IKernel Kernel { get; set; } = new StandardKernel();
-
-        public static IMyService Service { get; set; } 
+        public IKernel Kernel { get; set; } = new StandardKernel();
+        public IMyService Service { get; set; } 
 
         [TestMethod]
         public void Exercise_Create_OK()
         {
+            KernelHelper.Initialize(Kernel, KernelTypeEnum.Service);
+            Service = Kernel.Get<IMyService>();
+
             Service.Create(Assesment);
         }
         
         [TestMethod]
         public void Exercise_Read_OK()
         {
-            Kernel.Load(new List<INinjectModule>
-            {
-                new Bindings()
-            });
+            KernelHelper.Initialize(Kernel);
             Service = Kernel.Get<IMyService>();
             var assesment = Service.Read(13);
         }

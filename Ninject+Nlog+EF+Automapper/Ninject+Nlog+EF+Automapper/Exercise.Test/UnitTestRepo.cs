@@ -1,18 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using Exercise.Business;
+using Exercise.Business.Injection;
 using Exercise.DAL;
 using Exercise.DAL.DAO;
 using Exercise.DAL.Enums;
+using Exercise.DAL.Mapper;
 using Exercise.Domain;
 using Exercise.Domain.Enums;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Ninject;
+using Ninject.Modules;
 
 namespace Exercise.Test
 {
     [TestClass]
     public class UnitTestRepo
     {
-        public IMyRepository MyRepository { get; set; } = new MyRepository();
+        public IMyRepository MyRepository { get; set; } 
 
         public Assesment Assesment { get; set; } = new Assesment
         {
@@ -39,18 +44,23 @@ namespace Exercise.Test
                 }
             }
         };
+        public IKernel Kernel { get; set; } = new StandardKernel();
 
         [TestMethod]
         public void Exercise_Create_OK()
         {
+            KernelHelper.Initialize(Kernel, KernelTypeEnum.Repo);
+            MyRepository = Kernel.Get<IMyRepository>();
             MyRepository.Create(Assesment);
-            var assesmentDao = MyRepository.Read(5);
-            //TODO: assert
+            var assesmentDao = MyRepository.Read(9);
+            Assert.AreEqual(3, assesmentDao.Questions[0].Id);
         }
 
         [TestMethod]
         public void Exercise_Read_OK()
         {
+            KernelHelper.Initialize(Kernel, KernelTypeEnum.Repo);
+            MyRepository = Kernel.Get<IMyRepository>();
             var assesment = MyRepository.Read(11);
             Assert.AreEqual(4, assesment.Questions[0].Id);
         }

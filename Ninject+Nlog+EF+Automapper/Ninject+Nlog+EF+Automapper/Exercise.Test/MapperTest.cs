@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
 using AutoMapper;
 using Exercise.Business;
+using Exercise.DAL;
 using Exercise.DAL.DAO;
 using Exercise.DAL.Enums;
 using Exercise.DAL.Mapper;
@@ -49,7 +50,7 @@ namespace Exercise.Test
 
             Kernel.Load(new List<INinjectModule>
             {
-                new Bindings()
+                new RepoBindings()
             });
 
             Mapper = Kernel.Get<IMapper>();

@@ -37,8 +37,16 @@
     <Reference Include="Ninject, Version=3.3.4.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <HintPath>..\packages\Ninject.3.3.4\lib\net45\Ninject.dll</HintPath>
     </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.6.8\lib\net45\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -47,12 +55,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bindings.cs" />
+    <Compile Include="Injection\KernelHelper.cs" />
+    <Compile Include="Injection\KernelTypeEnum.cs" />
+    <Compile Include="Injection\ServiceBindings.cs" />
     <Compile Include="IMyService.cs" />
     <Compile Include="MyService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Exercise.Common\Exercise.Common.csproj">
+      <Project>{DF2B7C13-5883-4D28-A4E1-B9D666CD0ECC}</Project>
+      <Name>Exercise.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Exercise.DAL\Exercise.DAL.csproj">
       <Project>{BAD60FD8-E21E-4FB6-928F-B5E3592FCCF7}</Project>
       <Name>Exercise.DAL</Name>
@@ -65,5 +79,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

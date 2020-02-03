@@ -14,13 +14,19 @@ using System.Configuration;
 using Exercise.DAL.Enums;
 using Exercise.DAL.Helpers;
 using Ninject;
+using Ninject.Modules;
 
 namespace Exercise.DAL
 {
     public class MyRepository : IMyRepository
     {
-        public IKernel Kernel => new StandardKernel();
-        public IMapper Mapper => Kernel.Get<IMapper>();
+        public IKernel Kernel { get; set; }
+        public IMapper Mapper { get; set; }
+        public MyRepository(IKernel kernel, IMapper mapper)
+        {
+            Kernel = kernel;
+            Mapper = mapper;
+        }
         public void Create(Assesment assesment)
         {
             var assesmentDao = Mapper.Map<AssesmentDao>(assesment);
