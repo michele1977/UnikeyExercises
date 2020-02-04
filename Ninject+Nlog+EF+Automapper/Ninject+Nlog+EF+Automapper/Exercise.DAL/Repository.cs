@@ -1,4 +1,9 @@
-﻿using Exercise.Domain;
+﻿using AutoMapper;
+using Exercise.DAL.AutoMapper;
+using Exercise.DAL.DomainDTO;
+using Exercise.Domain;
+using Exercise.Domain.Enums;
+using Ninject;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,58 +16,25 @@ namespace Exercise.DAL
 {
     public class Repository : IMyRepository
     {
-        private readonly string ConnectionString = "Data Source=DESKTOP-82C0LNT\\SQLEXPRESS;Initial Catalog=Assesment_Excercise;Integrated Security=true";
-        public void Create(Assesment assestment)
+        readonly IMapper Mapper;
+        public Repository(IMapper mapper)
         {
+            Mapper = mapper;
+        }
+        private readonly string ConnectionString = "Data Source=DESKTOP-82C0LNT\\SQLEXPRESS;Initial Catalog=Assesment_Excercise;Integrated Security=true;MultipleActiveResultSets=true";
+        public void Create(Assesment assestment)
+        {            
+            var assessmentDAO = Mapper.Map<Assesment, AssessmentDAO>(assestment);
             using(SqlConnection connection = new SqlConnection(ConnectionString))
             {
-                 using(SqlCommand command = new SqlCommand("InsertAssessment", connection))
-                 {
-                    int assesmentId;
-                    int questionId;
-                    connection.Open();
-                    command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.AddRange(new[] {
-                        new SqlParameter("@AssessmentTitle", assestment.Title),
-                        new SqlParameter("@AssessmentCreationDate", assestment.CreationDate)
-                    });
+                connection.Open();
 
-                    SqlParameter returnedAssessmentId = command.Parameters.Add("@AssesmentId", SqlDbType.Int);
-                    returnedAssessmentId.Direction = ParameterDirection.Output;
+                int assesmentId = InsertAssessment(connection, assessmentDAO);
 
-                    command.ExecuteReader();
-
-                    assesmentId = (int)command.Parameters["@AssesmentId"].Value;
-
-                    command.CommandText = "InsertQuestion";
-                    foreach(var question in assestment.Questions)
-                    {
-                        command.Parameters.AddRange(new[] {
-                            new SqlParameter("@QuestionText", question.QuestionText),
-                            new SqlParameter("@Psition", question.Position),
-                            new SqlParameter("@AssesmentId", assesmentId)
-                        });
-                        SqlParameter returnedQuestionId = command.Parameters.Add("@QuestionId", SqlDbType.Int);
-                        returnedQuestionId.Direction = ParameterDirection.Output;
-
-                        command.ExecuteReader();
-
-                        questionId = (int)command.Parameters["@QuestionId"].Value;
-
-                        command.CommandText = "InsertAnswer";
-                        foreach (var answer in question.Answers)
-                        {
-                            command.Parameters.AddRange(new[] {
-                                new SqlParameter("@AnswerText", answer.AnswerText),
-                                new SqlParameter("@Psition", answer.Position),
-                                new SqlParameter("@IsCorrect", answer.IsCorrect),
-                                new SqlParameter("@QuestionId", questionId)
-                            });
-
-                            command.ExecuteReader();
-                        }
-                    }
-                 }
+                foreach(var questionDAO in assessmentDAO.Questions)
+                {
+                    InsertQuestion(connection, questionDAO, assesmentId);
+                }
             }
         }
 
@@ -84,7 +56,8 @@ namespace Exercise.DAL
 
         public List<Assesment> GetTestList(string text)
         {
-            List<Assesment> assesments = new List<Assesment>();
+            List<Assesment> assessments = new List<Assesment>();
+            List<AssessmentDAO> assesmentsDAO = new List<AssessmentDAO>();
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 using (SqlCommand command = new SqlCommand("GetTestsList", connection))
@@ -97,21 +70,27 @@ namespace Exercise.DAL
                     SqlDataReader reader = command.ExecuteReader();
                     while(reader.Read())
                     {
-                        assesments.Add(new Assesment() 
+                        assesmentsDAO.Add(new AssessmentDAO() 
                         {
                             Title = reader.GetFieldValue<string>(reader.GetOrdinal("Title")),
                             CreationDate = reader.GetFieldValue<DateTime>(reader.GetOrdinal("CreationDate"))
                         });
                     }
 
-                    return assesments;
+                    foreach(var assessmentDAO in assesmentsDAO)
+                    {
+                        assessments.Add(Mapper.Map<AssessmentDAO, Assesment>(assessmentDAO));
+                    }
+
+                    return assessments;
                 }
             }
         }
 
         public Assesment Read(int id)
         {
-            Assesment assesment = new Assesment();
+            AssessmentDAO assessmentDAO = new AssessmentDAO();
+            Assesment assessment = new Assesment();
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 using (SqlCommand command = new SqlCommand("ReadAssessment", connection))
@@ -125,18 +104,131 @@ namespace Exercise.DAL
 
                     while(reader.Read())
                     {
-                        assesment.Title = reader.GetFieldValue<string>(reader.GetOrdinal("Title"));
-                        assesment.CreationDate = reader.GetFieldValue<DateTime>(reader.GetOrdinal("CreationDate"));
+                        assessmentDAO.Title = reader.GetFieldValue<string>(reader.GetOrdinal("Title"));
+                        assessmentDAO.CreationDate = reader.GetFieldValue<DateTime>(reader.GetOrdinal("CreationDate"));
+                        assessmentDAO.Questions = ReadQuestions(connection, id);
                     }
 
-                    return assesment;
+                    assessment = Mapper.Map<AssessmentDAO, Assesment>(assessmentDAO);
+
+                    return assessment;
                 }
+            }
+        }
+
+        private List<QuestionDAO> ReadQuestions(SqlConnection connection, int assessmentId)
+        {
+            List<QuestionDAO> questions = new List<QuestionDAO>();
+            using(SqlCommand command = new SqlCommand("ReadQuestions", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+
+                command.Parameters.AddWithValue("@AssessmentId", assessmentId);
+
+                SqlDataReader reader = command.ExecuteReader();
+
+                while(reader.Read())
+                {
+                    questions.Add(new QuestionDAO()
+                    {
+                        QuestionText = reader.GetFieldValue<string>(reader.GetOrdinal("QuestionText")),
+                        Position = reader.GetFieldValue<int>(reader.GetOrdinal("Position")),
+                        Answers = ReadAnswers(connection, reader.GetFieldValue<int>(reader.GetOrdinal("Id")))
+                    });
+                }
+
+                return questions;
+            }
+        }
+
+        private List<AnswerDAO> ReadAnswers(SqlConnection connection, int questionId)
+        {
+            List<AnswerDAO> answers = new List<AnswerDAO>();
+            using (SqlCommand command = new SqlCommand("ReadAnswers", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+
+                command.Parameters.AddWithValue("@QuestionId", questionId);
+
+                SqlDataReader reader = command.ExecuteReader();
+
+                while(reader.Read())
+                {
+                    answers.Add(new AnswerDAO()
+                    {
+                        AnswerText = reader.GetFieldValue<string>(reader.GetOrdinal("AnswerText")),
+                        Position = reader.GetFieldValue<int>(reader.GetOrdinal("Position")),
+                        IsCorrect = (AnswerType)reader.GetFieldValue<byte>(reader.GetOrdinal("IsCorrect"))
+                    });
+                }
+
+                return answers;
             }
         }
 
         public void Update(Assesment assestment)
         {
             throw new NotImplementedException();
+        }
+
+        private int InsertAssessment(SqlConnection connection, AssessmentDAO assessmentDAO)
+        {
+            using (SqlCommand command = new SqlCommand("InsertAssessment", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddRange(new[] {
+                        new SqlParameter("@AssessmentTitle", assessmentDAO.Title),
+                        new SqlParameter("@AssessmentCreationDate", assessmentDAO.CreationDate)
+                    });
+
+                SqlParameter returnedAssessmentId = command.Parameters.Add("@AssesmentId", SqlDbType.Int);
+                returnedAssessmentId.Direction = ParameterDirection.Output;
+
+                command.ExecuteReader();
+
+                return (int)command.Parameters["@AssesmentId"].Value;
+            }
+        }
+
+        private void InsertQuestion(SqlConnection connection, QuestionDAO questionDAO, int assessmentId)
+        {
+            int questionId;
+            using (SqlCommand command = new SqlCommand("InsertQuestion", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddRange(new[] {
+                        new SqlParameter("@QuestionText", questionDAO.QuestionText),
+                        new SqlParameter("@Position", questionDAO.Position),
+                        new SqlParameter("@AssessmentId", assessmentId)
+                    });
+                SqlParameter returnedQuestionId = command.Parameters.Add("@QuestionId", SqlDbType.Int);
+                returnedQuestionId.Direction = ParameterDirection.Output;
+
+                command.ExecuteReader();
+
+                questionId = (int)command.Parameters["@QuestionId"].Value;
+
+                foreach (var answerDAO in questionDAO.Answers)
+                {
+                    InsertAnswer(answerDAO, connection, questionId);
+                }
+            }
+        }
+
+        private void InsertAnswer(AnswerDAO answerDAO, SqlConnection connection, int questionId)
+        {
+            using (SqlCommand command = new SqlCommand("InsertAnswer", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddRange(new[] {
+                            new SqlParameter("@AnswerText", answerDAO.AnswerText),
+                            new SqlParameter("@Position", answerDAO.Position),
+                            new SqlParameter("@IsCorrect", answerDAO.IsCorrect),
+                            new SqlParameter("@QuestionId", questionId)
+                });
+
+                command.ExecuteReader();
+            }
         }
     }
 }

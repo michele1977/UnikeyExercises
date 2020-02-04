@@ -20,6 +20,10 @@ namespace Exercise.Business
         {
             Repository.Create(assestment);
         }
+        public Assesment Read(int id)
+        {
+            return Repository.Read(id);
+        }
 
         public void Delete(int id)
         {
